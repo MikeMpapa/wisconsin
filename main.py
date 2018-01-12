@@ -217,7 +217,7 @@ class WisconsinGame(FloatLayout):
         self.data.append([self.round, self.major_modality,self.major_stimuli, self.stimuli_type,self.valid_response, self.error_persistant, self.clock,self.choice,self.perm[0],self.perm[1],self.perm[2],self.audio,self.text,self.visual,self.correct,self.non_persistent_errors, self.persistent_errors]) 
         print self.data
         # terminate session when round limit has been reached
-        if self.round == self.total_rounds:
+        if self.round >= self.total_rounds:
             Clock.schedule_once(self.log_and_terminate, 1.5)
         Clock.schedule_once(self.next_round, 1.5)
        
@@ -230,6 +230,7 @@ class WisconsinApp(App):
 
 if __name__ == '__main__':
     global args, data
+    print "User: "+sys.argv[1], "Email: "+ sys.argv[2]
     args = sys.argv[1:]
     #with open(args[1]+'.csv','w') as f
     #close.f
