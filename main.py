@@ -21,7 +21,7 @@ class WisconsinGame(FloatLayout):
     def __init__(self, **kwargs):
         super(WisconsinGame, self).__init__(**kwargs)
         
-        self.total_rounds = 5
+        self.total_rounds = 60
 
         self.data = []
         self.choice = ""
