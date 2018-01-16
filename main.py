@@ -51,9 +51,9 @@ class WisconsinGame(FloatLayout):
 
         
         self.commands_all = {}
-        self.commands_all['color'] = ["red","green","blue","yellow"]
-        self.commands_all['number'] = ["one","two","three","four"]
-        self.commands_all['shape'] = ["circle","triangle","cross","star"]
+        self.commands_all['color'] = ["red","green","blue","yellow","magenta"]
+        self.commands_all['number'] = ["one","two","three","four","five"]
+        self.commands_all['shape'] = ["circle","triangle","cross","star","heart"]
 
         self.commands = {}
 
@@ -66,6 +66,7 @@ class WisconsinGame(FloatLayout):
         
 #Evaluate answer according to current major modality
     def check_result(self):
+        print self.stimuli_type,self.choice
         if self.stimuli_type in ['red','circle','one'] and  self.choice == "b1":
            self.correct += 1  
            self.valid_response = True
@@ -79,6 +80,10 @@ class WisconsinGame(FloatLayout):
             self.valid_response = True
             self.error_persistant = 0
         elif self.stimuli_type in ['yellow','star','four'] and  self.choice == "b4":
+            self.correct += 1  
+            self.valid_response = True
+            self.error_persistant = 0
+        elif self.stimuli_type in ['magenta','heart','five'] and  self.choice == "b5":
             self.correct += 1  
             self.valid_response = True
             self.error_persistant = 0
@@ -101,6 +106,8 @@ class WisconsinGame(FloatLayout):
                 self.score += 3
             elif self.level == 3 :
                 self.score += 4
+            elif self.level == 5 :
+                self.score += 5
         #print "CORRECT: "+str(self.correct),"NON-PER ERRORS: "+str(self.non_persistent_errors), "PER ERRORS: "+str(self.persistent_errors)
 
 #Change object's opacity
@@ -148,11 +155,16 @@ class WisconsinGame(FloatLayout):
 
     def level_change(self):
         print self.commands_all
-        ids =  np.random.permutation(4)
-        self.level = np.random.randint(4)
-        if self.level == 3:
+        ids =  np.random.permutation(5)
+        self.level = np.random.randint(5)
+        
+        if self.level == 4:
             self.commands = dict(self.commands_all)
-        if self.level == 2:
+        elif self.level == 3:
+            self.commands['color'] = [self.commands_all['color'][ids[0]],self.commands_all['color'][ids[1]],self.commands_all['color'][ids[2]],self.commands_all['color'][ids[3]]]
+            self.commands['shape'] = [self.commands_all['shape'][ids[0]],self.commands_all['shape'][ids[1]],self.commands_all['shape'][ids[2]],self.commands_all['color'][ids[3]]]
+            self.commands['number'] = [self.commands_all['number'][ids[0]],self.commands_all['number'][ids[1]],self.commands_all['number'][ids[2]],self.commands_all['color'][ids[3]]]
+        elif self.level == 2:
             self.commands['color'] = [self.commands_all['color'][ids[0]],self.commands_all['color'][ids[1]],self.commands_all['color'][ids[2]]]
             self.commands['shape'] = [self.commands_all['shape'][ids[0]],self.commands_all['shape'][ids[1]],self.commands_all['shape'][ids[2]]]
             self.commands['number'] = [self.commands_all['number'][ids[0]],self.commands_all['number'][ids[1]],self.commands_all['number'][ids[2]]]
