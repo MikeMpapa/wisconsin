@@ -345,7 +345,7 @@ class WisconsinGame(FloatLayout):
             d = cPickle.load(fo)
             fo.close()
 
-        d[args[0]+'_'+args[1]] = self.correct
+        d[args[0]+'_'+args[1]] = self.score_total
         fo = open(leaderbord_pickle, "wb")
         cPickle.dump(d, fo, protocol=cPickle.HIGHEST_PROTOCOL)
         fo.close()
