@@ -106,7 +106,7 @@ class WisconsinGame(FloatLayout):
                 self.score += 3
             elif self.level == 3 :
                 self.score += 4
-            elif self.level == 5 :
+            elif self.level == 4 :
                 self.score += 5
         #print "CORRECT: "+str(self.correct),"NON-PER ERRORS: "+str(self.non_persistent_errors), "PER ERRORS: "+str(self.persistent_errors)
 
@@ -156,7 +156,9 @@ class WisconsinGame(FloatLayout):
     def level_change(self):
         print self.commands_all
         ids =  np.random.permutation(5)
-        self.level = np.random.randint(5)
+        self.level = 0
+        while self.level == 0:
+            self.level = np.random.randint(5)
         
         if self.level == 4:
             self.commands = dict(self.commands_all)
