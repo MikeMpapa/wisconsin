@@ -1,0 +1,17 @@
+Round	Level	 Score	Modality	Stimuli	Stimuli Type	Response	Persistence	Time	Button Pressed	Voice Stimuli	Text Stimuli	Image Stimuli	Voice Choice	Text Choice	Image Choice	Correct	NON-PER Errors	PER Errorsn
+1	4	5	text	shape	heart	True	0	3	b5	number	shape	color	four	heart	red	1	0	0
+2	4	10	text	shape	star	True	0	1	b4	number	shape	color	two	star	red	2	0	0
+3	4	15	text	color	green	True	0	1	b2	shape	color	number	star	green	five	3	0	0
+4	4	20	text	color	yellow	True	0	1	b4	number	color	shape	three	yellow	circle	4	0	0
+5	4	25	text	color	yellow	True	0	0	b4	shape	color	number	heart	yellow	two	5	0	0
+6	4	30	text	color	red	True	0	2	b1	shape	color	number	triangle	red	three	6	0	0
+7	4	35	text	number	two	True	0	2	b2	color	number	shape	blue	two	circle	7	0	0
+8	3	39	visual	number	magenta	True	0	1	b5	color	shape	number	green	star	magenta	8	0	0
+9	3	43	visual	number	four	True	0	2	b4	shape	color	number	magenta	green	four	9	0	0
+10	3	47	visual	color	green	True	0	1	b2	number	shape	color	four	circle	green	10	0	0
+11	3	51	visual	color	green	True	0	1	b2	shape	number	color	circle	four	green	11	0	0
+12	3	55	visual	shape	star	True	0	1	b4	color	number	shape	magenta	two	star	12	0	0
+13	3	59	visual	color	red	True	0	4	b1	number	shape	color	magenta	star	red	13	0	0
+14	3	63	visual	number	one	True	0	2	b1	color	shape	number	green	magenta	one	14	0	0
+15	3	67	visual	shape	triangle	True	0	1	b2	number	color	shape	magenta	red	triangle	15	0	0
+16	3	71	text	shape	cross	True	0	2	b3	number	shape	color	magenta	cross	red	16	0	0

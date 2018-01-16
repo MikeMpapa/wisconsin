@@ -21,11 +21,14 @@ class WisconsinGame(FloatLayout):
     def __init__(self, **kwargs):
         super(WisconsinGame, self).__init__(**kwargs)
         
-        self.total_rounds = 63  #total trials
+        self.total_rounds = 16#63  #total trials
         self.countdown_time = 6 #seconds
         #initial experiments --> major modalities changes randomly
         #final experiments --> modalities change according to more potential modality
         self.score = 0
+        self.score_total = 0
+
+        self.question_in_level = 0
 
         self.data = []
         self.choice = ""
@@ -41,7 +44,7 @@ class WisconsinGame(FloatLayout):
         global response_given 
         response_given = False
 
-        self.valid_response = True
+        self.valid_response = False
 
         self.modalities = ["visual","text","audio"]
 
@@ -59,7 +62,14 @@ class WisconsinGame(FloatLayout):
 
         self.perm =[]
 
+        self.ids['b1'].disabled = True       
+        self.ids['b2'].disabled = True       
+        self.ids['b3'].disabled = True       
+        self.ids['b4'].disabled = True     
+        self.ids['b5'].disabled = True     
+
         self.level = 0 #gamelevel
+        self.buttons_disabled = []
         self.level_change()
         self.next_round("")
 
@@ -96,7 +106,7 @@ class WisconsinGame(FloatLayout):
             else:
                 self.persistent_errors +=1
                 self.error_persistant = 2
-
+        '''
         if self.valid_response == True:
             if self.level == 0 :
                 self.score += 1
@@ -108,6 +118,18 @@ class WisconsinGame(FloatLayout):
                 self.score += 4
             elif self.level == 4 :
                 self.score += 5
+        '''
+        if self.valid_response == True:
+            print "CLOCKKKKKKK", self.clock
+            self.score = float(self.round+1 + self.level+1*self.question_in_level)/float(self.clock+1) 
+            self.score_total += self.score
+            print "SCORE", self.score
+            print "SCORE TOTAL", self.score_total
+        else :
+            self.score =0
+
+
+
         #print "CORRECT: "+str(self.correct),"NON-PER ERRORS: "+str(self.non_persistent_errors), "PER ERRORS: "+str(self.persistent_errors)
 
 #Change object's opacity
@@ -135,12 +157,19 @@ class WisconsinGame(FloatLayout):
 #Start countdouwn
     def countdown(self,_):
          global response_given
-         if self.clock >= self.countdown_time: # give error when predifined time has passed and terminate current timer
+         if self.clock > self.countdown_time and response_given==False:  
+            self.ids['b1'].disabled = True       
+            self.ids['b2'].disabled = True       
+            self.ids['b3'].disabled = True       
+            self.ids['b4'].disabled = True       
+            self.ids['b5'].disabled = True 
+            self.ids['b5'].disabled = True# give error when predifined time has passed and terminate current timer
             self.valid_response = False
             self.persistent_errors += 1
             self.error_persistant = 2
+            self.score = 0
             self.feedback()
-            self.data.append([self.round, self.level,self.major_modality,self.major_stimuli, self.stimuli_type,self.valid_response, self.error_persistant ,self.clock, self.choice,self.perm[0],self.perm[1],self.perm[2],self.audio,self.text,self.visual,self.correct,self.non_persistent_errors, self.persistent_errors]) 
+            self.data.append([self.round, self.level, self.score, self.major_modality,self.major_stimuli, self.stimuli_type,self.valid_response, self.error_persistant ,self.clock, self.choice,self.perm[0],self.perm[1],self.perm[2],self.audio,self.text,self.visual,self.correct,self.non_persistent_errors, self.persistent_errors]) 
             if self.round == self.total_rounds:
                 Clock.schedule_once(self.log_and_terminate, 1.5)
             Clock.schedule_once(self.next_round, 1.5)
@@ -150,14 +179,14 @@ class WisconsinGame(FloatLayout):
             return False
 
          self.clock += 1
-         #print self.clock
+         print self.clock
 
 
     def level_change(self):
         print self.commands_all
         ids =  np.random.permutation(5)
         self.level = 0
-        while self.level == 0:
+        while self.level == 0: #disable level0
             self.level = np.random.randint(5)
         
         if self.level == 4:
@@ -166,18 +195,38 @@ class WisconsinGame(FloatLayout):
             self.commands['color'] = [self.commands_all['color'][ids[0]],self.commands_all['color'][ids[1]],self.commands_all['color'][ids[2]],self.commands_all['color'][ids[3]]]
             self.commands['shape'] = [self.commands_all['shape'][ids[0]],self.commands_all['shape'][ids[1]],self.commands_all['shape'][ids[2]],self.commands_all['color'][ids[3]]]
             self.commands['number'] = [self.commands_all['number'][ids[0]],self.commands_all['number'][ids[1]],self.commands_all['number'][ids[2]],self.commands_all['color'][ids[3]]]
+            
+            self.ids['b'+str(ids[4]+1)].disabled = True
+            self.buttons_disabled = ['b'+str(ids[4]+1)]
         elif self.level == 2:
             self.commands['color'] = [self.commands_all['color'][ids[0]],self.commands_all['color'][ids[1]],self.commands_all['color'][ids[2]]]
             self.commands['shape'] = [self.commands_all['shape'][ids[0]],self.commands_all['shape'][ids[1]],self.commands_all['shape'][ids[2]]]
             self.commands['number'] = [self.commands_all['number'][ids[0]],self.commands_all['number'][ids[1]],self.commands_all['number'][ids[2]]]
+
+            self.ids['b'+str(ids[3]+1)].disabled = True       
+            self.ids['b'+str(ids[4]+1)].disabled = True
+            self.buttons_disabled = ['b'+str(ids[3]+1),'b'+str(ids[4]+1)]
         elif self.level == 1 :
             self.commands['color'] = [self.commands_all['color'][ids[0]],self.commands_all['color'][ids[1]]]
             self.commands['shape'] = [self.commands_all['shape'][ids[0]],self.commands_all['shape'][ids[1]]]
             self.commands['number'] = [self.commands_all['number'][ids[0]],self.commands_all['number'][ids[1]]]
+       
+            self.ids['b'+str(ids[2]+1)].disabled = True       
+            self.ids['b'+str(ids[3]+1)].disabled = True       
+            self.ids['b'+str(ids[4]+1)].disabled = True
+            self.buttons_disabled = ['b'+str(ids[2]+1),'b'+str(ids[3]+1),'b'+str(ids[4]+1)]
+
         elif self.level == 0 :
             self.commands['color'] = [self.commands_all['color'][ids[0]]]
             self.commands['shape'] = [self.commands_all['shape'][ids[0]]]
             self.commands['number'] = [self.commands_all['number'][ids[0]]]
+
+            self.ids['b'+str(ids[1]+1)].disabled = True       
+            self.ids['b'+str(ids[2]+1)].disabled = True       
+            self.ids['b'+str(ids[3]+1)].disabled = True       
+            self.ids['b'+str(ids[4]+1)].disabled = True
+            self.buttons_disabled = ['b'+str(ids[1]+1),'b'+str(ids[2]+1),'b'+str(ids[3]+1),'b'+str(ids[4]+1)]
+
         print
         print "LEVEL: ",self.level+1
         print self.commands
@@ -190,16 +239,33 @@ class WisconsinGame(FloatLayout):
         response_given = False
         self.clock = 0
         Clock.schedule_interval(self.countdown, 1)
+        
 
         self.round += 1
-
+        self.question_in_level += 1
+        print "Question:", self.question_in_level
         # Change Stimuli
-        if self.round%8 == 0 and self.valid_response == True:
+        if self.round%8 == 1 and self.valid_response == True:
+            print self.round,self.valid_response,"AAAAAAAAAAAA"
+            self.ids['b1'].disabled = False       
+            self.ids['b2'].disabled = False       
+            self.ids['b3'].disabled = False       
+            self.ids['b4'].disabled = False       
+            self.ids['b5'].disabled = False
+            self.question_in_level = 0
+
             tmp = self.major_modality
+            print self.round, self.valid_response
             while tmp == self.major_modality:
                      self.major_modality = self.modalities[np.random.randint(3)]
                      self.major_modality_change_round = self.round
             self.level_change()
+
+        for i in ["b1","b2","b3","b4","b5"]:
+            if i in self.buttons_disabled:
+                self.ids[i].disabled = True
+            else:
+                self.ids[i].disabled = False
         
         self.perm =  np.random.permutation(self.commands.keys())   
         
@@ -265,8 +331,8 @@ class WisconsinGame(FloatLayout):
 
         if not os.path.exists(path_save):
             os.makedirs(path_save)
-        with open(path_save + args[0]+'_'+args[1]+'_'+str(self.score)+'.csv','w') as f:
-                    f.write("Round\tLevel\tModality\tStimuli\tStimuli Type\tResponse\tPersistence\tTime\tButton Pressed\tVoice Stimuli\tText Stimuli\tImage Stimuli\tVoice Choice\tText Choice\tImage Choice\tCorrect\tNON-PER Errors\tPER Errorsn\n")
+        with open(path_save + args[0]+'_'+args[1]+'_'+str(self.score_total)+'.csv','w') as f:
+                    f.write("Round\tLevel\t Score\tModality\tStimuli\tStimuli Type\tResponse\tPersistence\tTime\tButton Pressed\tVoice Stimuli\tText Stimuli\tImage Stimuli\tVoice Choice\tText Choice\tImage Choice\tCorrect\tNON-PER Errors\tPER Errorsn\n")
                     for sample in self.data:
                         f.write((('\t').join([str(i) for i in sample])+'\n'))
         f.close
@@ -294,10 +360,16 @@ class WisconsinGame(FloatLayout):
 
 #App control function
     def on_control(self,choice):
+        self.ids['b1'].disabled = True       
+        self.ids['b2'].disabled = True       
+        self.ids['b3'].disabled = True       
+        self.ids['b4'].disabled = True     
+        self.ids['b5'].disabled = True     
+
         self.choice = choice
         self.check_result()
         self.feedback()
-        self.data.append([self.round, self.level,self.major_modality,self.major_stimuli, self.stimuli_type,self.valid_response, self.error_persistant, self.clock,self.choice,self.perm[0],self.perm[1],self.perm[2],self.audio,self.text,self.visual,self.correct,self.non_persistent_errors, self.persistent_errors]) 
+        self.data.append([self.round, self.level, self.score,self.major_modality,self.major_stimuli, self.stimuli_type,self.valid_response, self.error_persistant, self.clock,self.choice,self.perm[0],self.perm[1],self.perm[2],self.audio,self.text,self.visual,self.correct,self.non_persistent_errors, self.persistent_errors]) 
         # terminate session when round limit has been reached
         print self.score
         if self.round >= self.total_rounds:
