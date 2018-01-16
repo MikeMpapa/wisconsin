@@ -23,6 +23,7 @@ class WisconsinGame(FloatLayout):
         
         self.total_rounds = 16#63  #total trials
         self.countdown_time = 6 #seconds
+        self.level_change_ratio = 4 #rounds to change the game
         #initial experiments --> major modalities changes randomly
         #final experiments --> modalities change according to more potential modality
         self.score = 0
@@ -189,9 +190,9 @@ class WisconsinGame(FloatLayout):
         while self.level == 0: #disable level0
             self.level = np.random.randint(5)
         
-        if self.level == 4:
-            self.commands = dict(self.commands_all)
-        elif self.level == 3:
+        self.commands = dict(self.commands_all)
+        
+        if self.level == 3:
             self.commands['color'] = [self.commands_all['color'][ids[0]],self.commands_all['color'][ids[1]],self.commands_all['color'][ids[2]],self.commands_all['color'][ids[3]]]
             self.commands['shape'] = [self.commands_all['shape'][ids[0]],self.commands_all['shape'][ids[1]],self.commands_all['shape'][ids[2]],self.commands_all['color'][ids[3]]]
             self.commands['number'] = [self.commands_all['number'][ids[0]],self.commands_all['number'][ids[1]],self.commands_all['number'][ids[2]],self.commands_all['color'][ids[3]]]
@@ -245,7 +246,7 @@ class WisconsinGame(FloatLayout):
         self.question_in_level += 1
         print "Question:", self.question_in_level
         # Change Stimuli
-        if self.round%8 == 1 and self.valid_response == True:
+        if self.round%self.level_change_ratio == 1 and self.valid_response == True:
             print self.round,self.valid_response,"AAAAAAAAAAAA"
             self.ids['b1'].disabled = False       
             self.ids['b2'].disabled = False       
