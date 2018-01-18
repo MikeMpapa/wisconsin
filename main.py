@@ -120,9 +120,9 @@ class WisconsinGame(FloatLayout):
             elif self.level == 4 :
                 self.score += 5
         '''
-        if self.valid_response == True:
+        if self.valid_response == True and question_in_level >2:
             print "CLOCKKKKKKK", self.clock
-            self.score = float(self.round+1 + self.level+1*self.question_in_level)/float(self.clock+1) 
+            self.score = float(self.level+1)/float(self.clock+1) 
             self.score_total += self.score
             print "SCORE", self.score
             print "SCORE TOTAL", self.score_total
