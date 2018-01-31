@@ -138,12 +138,12 @@ class WisconsinGame(FloatLayout):
 #Give audiovisual feedback
     def feedback(self):
         if self.valid_response == True:
-            self.ids['feedback'].source = "correct.png"
-            sound = SoundLoader.load('correct.mp3')     
+            self.ids['feedback'].source = "../AppData/correct.png"
+            sound = SoundLoader.load('../AppData/'+'correct.mp3')     
             sound.play()   
         else:    
-            self.ids['feedback'].source = "wrong.png"
-            sound = SoundLoader.load('wrong.mp3')     
+            self.ids['feedback'].source = "../AppData/wrong.png"
+            sound = SoundLoader.load('../AppData/'+'wrong.mp3')     
             sound.play()   
         self.ids['feedback'].opacity = 1
         Clock.schedule_once(partial(self.chage_opacity,'feedback'), 1)
@@ -296,9 +296,9 @@ class WisconsinGame(FloatLayout):
 
 
 
-        self.ids['visual'].source = ('.').join((self.visual,'jpg'))
+        self.ids['visual'].source = ('.').join(('../AppData/'+self.visual,'jpg'))
         self.ids['text'].text = self.text
-        sound = SoundLoader.load(self.audio+'.wav')     
+        sound = SoundLoader.load('../AppData/'+self.audio+'.wav')     
         sound.play()   
 
 
@@ -322,9 +322,9 @@ class WisconsinGame(FloatLayout):
     def log_and_terminate(self,_):
         global args
 
-        path_save = "Data/"+experiment+"/"  
-        path_leaderboard =  "Data/leaderbord.csv"   
-        leaderbord_pickle =  "Data/leaderbord"     
+        path_save = "../Data/"+experiment+"/"  
+        path_leaderboard =  "../Data/leaderbord.csv"   
+        leaderbord_pickle =  "../Data/leaderbord"     
 
         if not os.path.exists(path_save):
             os.makedirs(path_save)
