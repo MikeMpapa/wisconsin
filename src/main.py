@@ -34,7 +34,6 @@ def readFrames(path):
         cv2.imwrite(os.path.join(path, fname), frame)
         frameCounter+=1
 
-
         if quit:
             break
 
@@ -278,7 +277,7 @@ class WisconsinGame(FloatLayout):
         self.question_in_level += 1
         print "Question:", self.question_in_level
         # Change Stimuli
-        if self.round%self.level_change_ratio == 1 and self.valid_response == True:
+        if self.round%self.level_change_ratio == 1:# and self.valid_response == True:
             self.ids['b1'].disabled = False       
             self.ids['b2'].disabled = False       
             self.ids['b3'].disabled = False       
@@ -432,11 +431,11 @@ if __name__ == '__main__':
     print path
     dirs = [i for i in os.listdir(path) if os.path.isdir(path+'/'+i)]
     print os.listdir(path),dirs
-    sys.exit()
+    #sys.exit()
     user_id = str(len(dirs))
     email = sys.argv[1]
 
-    foldername = "user_"+user_id+"/"
+    foldername = "/user_"+user_id+"/"
     path = path+foldername
     if not os.path.exists(path):
         os.makedirs(path)
