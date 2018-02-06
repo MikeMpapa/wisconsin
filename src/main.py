@@ -7,13 +7,40 @@ from kivy.clock import Clock
 from functools import partial
 import time
 import numpy as np
+import cv2
 import sys,os, cPickle
-
+from threading import Thread
 
 kivy.require('1.9.0')
 
-global experiment,final_sec
-experiment = "initial_study"
+
+
+
+
+def readFrames(path):
+
+    global round_set,user_id, round_id, quit
+
+    flag = 0
+    frameCounter=1
+    cap = cv2.VideoCapture(0)
+  
+    while(True):
+        ret, frame = cap.read()
+        #cv2.imshow('frame',frame)
+
+        fname = str(round_set)+"_"+str(round_id)+"_"+str(frameCounter)+".jpg"
+        #print(path+fname)
+        cv2.imwrite(os.path.join(path, fname), frame)
+        frameCounter+=1
+
+
+        if quit:
+            break
+
+    # When everything done, release the capture
+    cap.release()
+    #cv2.destroyAllWindows()
 
 # Initialize Variables
 class WisconsinGame(FloatLayout):
@@ -21,9 +48,16 @@ class WisconsinGame(FloatLayout):
     def __init__(self, **kwargs):
         super(WisconsinGame, self).__init__(**kwargs)
         
-        self.total_rounds = 66  #total trials
+        global round_set,round_id
+        round_set = 0
+
+        self.round = 0
+        round_id = self.round
+
+        
+        self.total_rounds = 6#66  #total trials
         self.countdown_time = 6 #seconds (1 -->7)
-        self.level_change_ratio = 6 #rounds to change the game
+        self.level_change_ratio = 3 #6 #rounds to change the game
         #initial experiments --> major modalities changes randomly
         #final experiments --> modalities change according to more potential modality
         self.score = 0
@@ -34,7 +68,6 @@ class WisconsinGame(FloatLayout):
         self.data = []
         self.choice = ""
         self.clock = 0
-        self.round = 0
         self.correct = 0
         #self.errors = 0
         self.major_modality_change_round = 1
@@ -233,13 +266,15 @@ class WisconsinGame(FloatLayout):
 
 #Draw next round
     def next_round(self,_):
-        global response_given
+        global response_given, round_id, round_set
         response_given = False
         self.clock = 0
         Clock.schedule_interval(self.countdown, 1)
         
 
         self.round += 1
+        round_id = self.round
+        
         self.question_in_level += 1
         print "Question:", self.question_in_level
         # Change Stimuli
@@ -251,6 +286,12 @@ class WisconsinGame(FloatLayout):
             self.ids['b5'].disabled = False
             self.question_in_level = 1
             self.buttons_disabled = []
+
+            global round_set            
+            round_set += 1
+
+   
+       
 
             tmp = self.major_modality
             while tmp == self.major_modality:
@@ -320,15 +361,15 @@ class WisconsinGame(FloatLayout):
 
 #Terminate session function
     def log_and_terminate(self,_):
-        global args
-
+        global user_id, email,quit
+        quit = True
         path_save = "../Data/"+experiment+"/"  
         path_leaderboard =  "../Data/leaderbord.csv"   
         leaderbord_pickle =  "../Data/leaderbord"     
 
         if not os.path.exists(path_save):
             os.makedirs(path_save)
-        with open(path_save + args[0]+'_'+args[1]+'_'+str(self.score_total)+'.csv','w') as f:
+        with open(path_save + user_id+'_'+email+'_'+str(self.score_total)+'.csv','w') as f:
                     f.write("Round\tQuestion\tLevel\t Score\tModality\tStimuli\tStimuli Type\tResponse\tPersistence\tTime\tButton Pressed\tVoice Stimuli\tText Stimuli\tImage Stimuli\tVoice Choice\tText Choice\tImage Choice\tCorrect\tNON-PER Errors\tPER Errorsn\n")
                     for sample in self.data:
                         f.write((('\t').join([str(i) for i in sample])+'\n'))
@@ -341,7 +382,7 @@ class WisconsinGame(FloatLayout):
             d = cPickle.load(fo)
             fo.close()
 
-        d[args[0]+'_'+args[1]] = self.score_total
+        d[user_id+'_'+email] = self.score_total
         fo = open(leaderbord_pickle, "wb")
         cPickle.dump(d, fo, protocol=cPickle.HIGHEST_PROTOCOL)
         fo.close()
@@ -379,13 +420,34 @@ class WisconsinApp(App):
 
 
 if __name__ == '__main__':
-    global args, data
-    print "User: "+sys.argv[1], "Email: "+ sys.argv[2]
-    args = sys.argv[1:]
-    #with open(args[1]+'.csv','w') as f
-    #close.f
-    WisconsinApp().run()
+    global  user_id, email, experiment,round_set,round_id,quit
+    experiment = "initial_study"
+    round_set = 0
+    quit = False
+    
+    path = '../Data/'+experiment+'/images/'
+    if not os.path.exists(path):
+        os.makedirs(path)
+    path = os.path.abspath(path)
+    print path
+    dirs = [i for i in os.listdir(path) if os.path.isdir(path+'/'+i)]
+    print os.listdir(path),dirs
+    sys.exit()
+    user_id = str(len(dirs))
+    email = sys.argv[1]
 
+    foldername = "user_"+user_id+"/"
+    path = path+foldername
+    if not os.path.exists(path):
+        os.makedirs(path)
 
+    print "User: "+user_id, "Email: " + email
 
+    
+    thread1 = Thread(target=WisconsinApp().run)
+    thread1.start()
+    thread2 = Thread( target=readFrames,args=(path,) )
+    thread2.start()
+    thread1.join()
+    thread2.join()
 

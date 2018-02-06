@@ -1,32 +1,26 @@
 import numpy as np
 import cv2
 import os
+from  multiprocessing import Value
 
 
-def readFrames(path):
+global round_id 
+round_id = 1
+
+def readFrames(path,round_id):
+	print round_id.value
 	flag = 0
 	frameCounter=1
-	folderCounter = 1
+	folderCounter = round_id.value
 	foldername = "round_"+str(folderCounter)+"/"
 	path = path+foldername
 	cap = cv2.VideoCapture(0)
 	while(True):
-	    	ret, frame = cap.read()
-	    	cv2.imshow('frame',frame)
-
-		if(flag == 1):
-			#resetting flag
-			flag = 0
-			folderCounter+=1
-			os.makedirs(path+"round_"+str(folderCounter))
-			frameCounter=1
-
-			foldername = "round_"+str(folderCounter)+"/"
-			path = path+foldername
-
+		ret, frame = cap.read()
+		cv2.imshow('frame',frame)
 
 		fname = "frame_"+str(folderCounter)+"_"+str(frameCounter)+".jpg"
-		print(path+fname)
+		#print(path+fname)
 		cv2.imwrite(os.path.join(path, fname), frame)
 		frameCounter+=1
 
