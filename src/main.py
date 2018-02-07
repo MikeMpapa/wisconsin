@@ -24,17 +24,24 @@ def readFrames(path):
     flag = 0
     frameCounter=1
     cap = cv2.VideoCapture(0)
-  
+    frame_struct = []
+    #frame_struct.append([])
+    #frame_struct[0] = []
+
     while(True):
         ret, frame = cap.read()
         #cv2.imshow('frame',frame)
-
+        if round_set > len(frame_struct)-1:
+                frame_struct.append([])
+        frame_struct[round_set].append(frame)
         fname = str(round_set)+"_"+str(round_id)+"_"+str(frameCounter)+".jpg"
         #print(path+fname)
         cv2.imwrite(os.path.join(path, fname), frame)
         frameCounter+=1
 
         if quit:
+            filename = "../Data/"+experiment+"/images/user_"+user_id+"/data"
+            np.save(filename,frame_struct)
             break
 
     # When everything done, release the capture
