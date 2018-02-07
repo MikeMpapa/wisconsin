@@ -277,7 +277,7 @@ class WisconsinGame(FloatLayout):
         self.question_in_level += 1
         print "Question:", self.question_in_level
         # Change Stimuli
-        if self.round%self.level_change_ratio == 1:# and self.valid_response == True:
+        if self.round%self.level_change_ratio == 1 and self.valid_response == True:
             self.ids['b1'].disabled = False       
             self.ids['b2'].disabled = False       
             self.ids['b3'].disabled = False       
@@ -286,7 +286,7 @@ class WisconsinGame(FloatLayout):
             self.question_in_level = 1
             self.buttons_disabled = []
 
-            global round_set            
+            #global round_set            
             round_set += 1
 
    
